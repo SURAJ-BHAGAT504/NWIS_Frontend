@@ -1,0 +1,37 @@
+<div class="dashboard-container">
+
+    <div class="sidebar" [ngClass]="{'active': isSidebarOpen}">
+        <div class="sidebar-header">
+            <button class="btn-close-custom" (click)="toggleSidebar()"><h3>⬅</h3></button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="#">🏠 Home</a></li>
+            <li><a href="#">👤 Profile</a></li>
+            <li><a href="#">⚙️ Settings</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content" [ngClass]="{'shifted': isSidebarOpen}">
+        <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+            <div class="container-fluid d-flex align-items-center">
+
+                <button class="btn btn-outline-secondary" type="button" (click)="toggleSidebar()">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <span class="mx-auto fw-bold">Test</span>
+
+                <button class="btn btn-outline-danger" type="button" (click)="Logout()">
+                    <h6>Logout</h6>
+                </button>
+
+            </div>
+        </nav>
+        <div class="p-4">
+            <h1>Dashboard Content</h1>
+            <p>Click the menu button to test the ngClass toggle.</p>
+            <small>Sidebar State: {{ isSidebarOpen }}</small>
+        </div>
+        <div class="overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div>
+    </div>
+</div>
