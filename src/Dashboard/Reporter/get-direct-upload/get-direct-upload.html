@@ -1,0 +1,71 @@
+<div class="container-fluid p-0">
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>My Direct Uploads</h2>
+        <button class="btn btn-sm btn-primary" (click)="fetchDirectUpload()">Refresh 🔄</button>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div class="table-responsive" *ngIf="!isLoading">
+        <table class="table table-bordered table-striped table-hover mt-3 align-middle">
+            <thead class="table-dark text-nowrap">
+                <tr>
+                    <th>Story ID</th>
+                    <th>File Name</th>
+                    <th>File Type</th>
+                    <th>Description</th>
+                    <th>Script</th>
+                    <th>Status</th>
+                    <th>Upload Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of directUpload">
+                    
+                    <td>{{ item.Story_Id }}</td>
+
+                    <td class="fw-bold">{{ item.File_Name }}</td>
+
+                    <td>
+                        <span [ngClass]="{
+                            'badge bg-info text-dark': item.File_Type === 'Video',
+                            'badge bg-warning text-dark': item.File_Type === 'Image',
+                            'badge bg-secondary': item.File_Type === 'Audio',
+                            'badge bg-light text-dark border': item.File_Type === 'Text'
+                        }">
+                            {{ item.File_Type }}
+                        </span>
+                    </td>
+
+                    <td style="min-width: 200px;">
+                        <small>{{ item.File_Description || '-' }}</small>
+                    </td>
+
+                    <td style="min-width: 200px;">
+                        <small class="text-muted">{{ item.File_Script || '-' }}</small>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-success">{{ item.Assigned_Status }}</span>
+                    </td>
+
+                    <td class="text-nowrap">{{ item.Upload_Date }}</td>
+
+                    <td>
+                        <button class="btn btn-sm btn-outline-info">View</button>
+                    </td>
+                </tr>
+
+                <tr *ngIf="directUpload.length === 0">
+                    <td colspan="8" class="text-center p-4 text-muted">
+                        No direct uploads found.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

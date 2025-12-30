@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../../Service/Login/auth';
 import { Router } from '@angular/router';
-import { error, timeStamp } from 'console';
 
 @Component({
   selector: 'app-login',
@@ -41,6 +40,7 @@ export class Login {
             localStorage.setItem('userId', response.userId);
             localStorage.setItem('userName', response.userName);
             console.log(response.token);
+            console.log(response.userCode)
             this.router.navigate(['dashboard']);
           }
           else{

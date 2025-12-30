@@ -2,12 +2,33 @@
 
     <div class="sidebar" [ngClass]="{'active': isSidebarOpen}">
         <div class="sidebar-header">
-            <button class="btn-close-custom" (click)="toggleSidebar()"><h3>⬅</h3></button>
+            <h4><span style="color: red;">Hello!</span> <span style="color: aqua;"> {{userName}}</span></h4>
         </div>
         <ul class="sidebar-links">
-            <li><a href="#">🏠 Home</a></li>
-            <li><a href="#">👤 Profile</a></li>
-            <li><a href="#">⚙️ Settings</a></li>
+            <li>
+                <a (click)="showSection('assignments')" [class.active-link]="currentSection === 'assignments'"
+                    style="cursor: pointer;">
+                    Assignment
+                </a>
+            </li>
+            <li>
+                <a (click)="showSection('uploadedAssignments')"
+                    [class.active-link]="currentSection === 'uploadedAssignments'" style="cursor: pointer;">
+                    Assignment Uploaded
+                </a>
+            </li>
+            <li>
+                <a (click)="showSection('directUpload')" [class.active-link]="currentSection === 'directUpload'"
+                    style="cursor: pointer;">
+                    Direct Upload
+                </a>
+            </li>
+            <li>
+                <a (click)="showSection('getdirectUpload')" [class.active-link]="currentSection === 'getdirectUpload'"
+                    style="cursor: pointer;">
+                    Direct Upload
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -28,10 +49,131 @@
             </div>
         </nav>
         <div class="p-4">
-            <h1>Dashboard Content</h1>
-            <p>Click the menu button to test the ngClass toggle.</p>
-            <small>Sidebar State: {{ isSidebarOpen }}</small>
+            <div *ngIf="currentSection === 'assignments'">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>My Assignment</h2>
+                    <button class="btn btn-sm btn-primary" (click)="fetchAssignments()">Refresh 🔄</button>
+                </div>
+
+                <div *ngIf="isLoading" class="text-center p-5">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+
+                <div class="table-responsive" *ngIf="!isLoading">
+                    <table class="table table-bordered table-striped table-hover mt-3 align-middle text-nowrap">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Upload</th>
+                                <th>ID</th>
+                                <th>Story Name</th>
+                                <th>Category</th>
+                                <th>Shoot Type</th>
+                                <th>User Type</th>
+                                <th>Assigned By</th>
+                                <th>Remarks</th>
+                                <th>Created By</th>
+                                <th>Source</th>
+                                <th>Channel</th>
+                                <th>Location</th>
+                                <th>Shoot Date</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of assignments">
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-2"
+                                        (click)="openUploadModal(item)">
+                                        <span>☁️</span> Upload
+                                    </button>
+                                </td>
+                                <td>{{ item.Strory_Id }}</td>
+                                <td class="fw-bold text-nowrap">{{ item.Story_Name }}</td>
+                                <td><span class="badge bg-secondary">{{ item.Story_Category }}</span></td>
+                                <td>{{ item.Shoot_Type }}</td>
+                                <td>{{ item.Assigned_User_Type }}</td>
+                                <td>{{ item.Assigned_By }}</td>
+                                <td>
+                                    <small class="text-muted">{{ item.Remarks_Assigned_By || '-' }}</small>
+                                </td>
+                                <td>{{ item.Created_By }}</td>
+                                <td>{{ item.Source_Name }}</td>
+                                <td>{{ item.Channel_Name }}</td>
+                                <td>{{ item.Location || '-' }}</td>
+                                <td class="text-nowrap">{{ item.ShootDate }}</td>
+                                <td class="text-nowrap">{{ item.Created_at }}</td>
+                            </tr>
+                            <tr *ngIf="assignments.length === 0">
+                                <td colspan="14" class="text-center p-4 text-muted">
+                                    No direct uploads found.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="currentSection === 'uploadedAssignments'">
+                <app-uploaded-assignment></app-uploaded-assignment>
+            </div>
+            <div *ngIf="currentSection === 'directUpload'">
+                <app-direct-upload></app-direct-upload>
+            </div>
+            <div *ngIf="currentSection === 'getdirectUpload'">
+                <app-get-direct-upload></app-get-direct-upload>
+            </div>
         </div>
-        <div class="overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div>
+    </div>
+    <div class="overlay" *ngIf="isSidebarOpen" (click)="toggleSidebar()"></div>
+
+    <div class="modal-backdrop" *ngIf="isUploadModalOpen">
+        <div class="modal-content-custom">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="m-0">Upload Files (Video/Audio/Image/Text)</h4>
+                <button class="btn-close" (click)="closeUploadModal()"></button>
+            </div>
+
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="upload-box">
+                        <div class="text-center">
+                            <p class="mb-2">Drop files here to upload</p>
+                            <span class="text-muted">Or</span><br>
+                            <a href="#" class="text-primary fw-bold text-decoration-none">Browse Files</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Category</label>
+                        <select class="form-select">
+                            <option>Video</option>
+                            <option>Audio</option>
+                            <option>Image</option>
+                            <option>Text</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description</label>
+                        <textarea class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Script</label>
+                        <textarea class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <button class="btn btn-primary px-4 mt-2" (click)="submitUpload()">
+                        Upload
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>

@@ -1,0 +1,14 @@
+.table {
+    font-size: 0.95rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+td small {
+    display: block;
+    max-height: 60px; 
+    overflow-y: auto; 
+}
